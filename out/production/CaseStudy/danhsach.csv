@@ -1,3 +1,7 @@
-ID,Ten Sach,Tac Gia
-123,Tây Du Ký,Ngô Thừa Ân
-124,Cơn gió,Ngô Văn Thành
+﻿ID,Tên Sách,Tác Giả,Nhà Xuất Bản,Năm Phát Hành,Xuất Xứ
+111,Đắc Nhân Tâm,Dale Carnegie,NXB Tổng hợp,1936,Mỹ
+666,Harry Potter,J.K. Rowling,Bloomsbury,1997,Anh
+333,Mắt Biếc,Nguyễn Nhật Ánh,NXB Trẻ,1990,Việt Nam
+222,Nhà Giả Kim,Paulo Coelho,NXB Hội Nhà Văn,1988,Brazil
+444,Clean Code,Robert C. Martin,Pearson,2008,Mỹ
+555,Số Đỏ,Vũ Trọng Phụng,NXB Văn Học,1936,Việt Nam

@@ -1,7 +1,5 @@
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 class LibraryManager {
@@ -14,28 +12,20 @@ class LibraryManager {
 
     public void sortByName() {
         if (documents.isEmpty()) {
-            System.out.println("Danh sách trống, không thể sắp xếp.");
+            System.out.println("\t⚠️ Danh sách trống, không thể sắp xếp.");
             return;
         }
-
-        Collections.sort(documents, new Comparator<Document>() {
-            @Override
-            public int compare(Document d1, Document d2) {
-                return d1.getTitle().compareToIgnoreCase(d2.getTitle());
-            }
-        });
-
-        System.out.println("Đã sắp xếp danh sách theo tên thành công!");
+        documents.sort(new SortByName());
+        System.out.println("\t✨ Đã sắp xếp danh sách theo Tên (A-Z)!");
     }
 
     public void sortByAuthor() {
-        documents.sort((d1, d2) -> {
-            if (d1 instanceof Book && d2 instanceof Book) {
-                return ((Book) d1).getAuthor().compareToIgnoreCase(((Book) d2).getAuthor());
-            }
-            return 0;
-        });
-        System.out.println("Đã sắp xếp theo tên tác giả!");
+        if (documents.isEmpty()) {
+            System.out.println("\t⚠️ Danh sách trống, không thể sắp xếp.");
+            return;
+        }
+        documents.sort(new SortByAuthor());
+        System.out.println("\t✨ Đã sắp xếp danh sách theo Tác giả (A-Z)!");
     }
 
     public void showAll() {
@@ -56,22 +46,27 @@ class LibraryManager {
     }
 
     public void exportToCSV(String fileName) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
-            writer.write("ID,Ten Sach,Tac Gia");
+        try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
+                new FileOutputStream(fileName), "UTF-8"))) {
+
+            writer.write('\ufeff');
+
+            writer.write("ID,Tên Sách,Tác Giả,Nhà Xuất Bản,Năm Phát Hành,Xuất Xứ");
             writer.newLine();
 
             for (Document doc : documents) {
                 if (doc instanceof Book) {
                     Book b = (Book) doc;
-                    String line = String.format("%s,%s,%s",
-                            b.getId(), b.getTitle(), b.getAuthor());
+                    String line = String.format("%s,%s,%s,%s,%d,%s",
+                            b.getId(), b.getTitle(), b.getAuthor(),
+                            b.getPublisher(), b.getPublishYear(), b.getOrigin());
                     writer.write(line);
                     writer.newLine();
                 }
             }
-            System.out.println("Đã xuất file Excel (CSV) thành công tại: " + fileName);
+            System.out.println("\t✅ Xuất file thành công: " + fileName);
         } catch (IOException e) {
-            System.err.println("Lỗi khi xuất file: " + e.getMessage());
+            System.err.println("\t❌ Lỗi khi xuất file: " + e.getMessage());
         }
     }
 
@@ -86,13 +81,17 @@ class LibraryManager {
         return isRemoved;
     }
 
-    public boolean updateBook(String id, String newTitle, String newAuthor) {
+    public boolean updateBook(String id, String newTitle, String newAuthor,
+                              String newPublisher, int newYear, String newOrigin) {
         Document doc = findById(id);
 
         if (doc instanceof Book) {
             Book book = (Book) doc;
             book.setTitle(newTitle);
             book.setAuthor(newAuthor);
+            book.setPublisher(newPublisher);
+            book.setPublishYear(newYear);
+            book.setOrigin(newOrigin);
             return true;
         }
         return false;
